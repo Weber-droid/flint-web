@@ -1,0 +1,19 @@
+{
+  "name": "flint-web",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"bun run dev:frontend\" \"bun run dev:backend\"",
+    "dev:frontend": "cd frontend && bun run dev",
+    "dev:backend": "cd backend && bun run dev",
+    "build": "cd frontend && bun run build",
+    "test": "vitest",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "vitest": "^1.2.2",
+    "husky": "^9.0.11",
+    "eslint": "^8.56.0",
+    "prettier": "^3.2.5"
+  }
+}
