@@ -8,24 +8,25 @@ const marketing = join(root, 'marketing')
 const dist = join(root, 'frontend', 'dist')
 
 const files = [
-  'privacy.html',
-  'terms.html',
-  'license.html',
-  'login.html',
-  'signup.html',
-  'forgot-password.html',
-  'logo.svg',
-  'icon.svg',
-  'icon.png',
+  ['index.html', 'home.html'],   // marketing home → avoids overwriting React's index.html
+  ['privacy.html', 'privacy.html'],
+  ['terms.html', 'terms.html'],
+  ['license.html', 'license.html'],
+  ['login.html', 'login.html'],
+  ['signup.html', 'signup.html'],
+  ['forgot-password.html', 'forgot-password.html'],
+  ['logo.svg', 'logo.svg'],
+  ['icon.svg', 'icon.svg'],
+  ['icon.png', 'icon.png'],
 ]
 
-for (const file of files) {
-  const src = join(marketing, file)
-  if (existsSync(src)) {
-    copyFileSync(src, join(dist, file))
-    console.log(`  copied: ${file}`)
+for (const [src, dest] of files) {
+  const srcPath = join(marketing, src)
+  if (existsSync(srcPath)) {
+    copyFileSync(srcPath, join(dist, dest))
+    console.log(`  copied: ${src} → ${dest}`)
   } else {
-    console.warn(`  skipped (not found): ${file}`)
+    console.warn(`  skipped (not found): ${src}`)
   }
 }
 

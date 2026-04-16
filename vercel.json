@@ -1,8 +1,9 @@
 {
   "installCommand": "cd flint-web/frontend && npm install",
-  "buildCommand": "cd flint-web/frontend && npx vite build",
+  "buildCommand": "cd flint-web/frontend && npx vite build && node ../scripts/postbuild.js",
   "outputDirectory": "flint-web/frontend/dist",
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+  "routes": [
+    { "src": "/", "dest": "/home.html" },
+    { "src": "/((?!.*\\.[^/]+$).*)", "dest": "/index.html" }
   ]
 }
