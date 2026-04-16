@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useRequestStore } from '../../store/requestStore'
-import { ChevronDown, Play, Square, Loader2 } from 'lucide-react'
+import { ChevronDown, Play, Loader2 } from 'lucide-react'
 
 const methods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS']
 

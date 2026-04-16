@@ -1,6 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
+import path from 'path'
 import { createServer } from 'http'
 import { proxyRouter } from './routes/proxy'
 import { aiRouter } from './routes/ai'
@@ -11,6 +12,9 @@ dotenv.config()
 const app = express()
 app.use(cors())
 app.use(express.json({ limit: '50mb' }))
+
+// Serve marketing pages at /
+app.use('/', express.static(path.join(__dirname, '../marketing')))
 
 const server = createServer(app)
 

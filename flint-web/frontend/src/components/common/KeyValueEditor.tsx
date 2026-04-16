@@ -1,4 +1,3 @@
-import React from 'react'
 import { KeyValue } from '../../types/request'
 import { Trash2, Plus } from 'lucide-react'
 

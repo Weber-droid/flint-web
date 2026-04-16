@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flint</title>
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="icon" href="/icon.png" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --border: #e2e8f0;
+      --text-primary: #0f172a;
+      --text-secondary: #64748b;
+      --accent: #7c3aed;
+      --accent-hover: #6d28d9;
+      --success: #166534;
+      --success-bg: #dcfce7;
+      --error: #ef4444;
+      --font-sans: 'Inter', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      line-height: 1.7;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+      transition: color 150ms ease;
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      outline: none;
+    }
+
+    /* Typography */
+    h1, h2, h3, h4 {
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+
+    h1 { font-size: 4rem; }
+    h2 { font-size: 2.5rem; margin-bottom: 1rem; }
+    h3 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    p { color: var(--text-secondary); font-size: 1.125rem; }
+
+    /* Layout */
+    .container {
+      max-w-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      width: 100%;
+      max-width: 1200px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 150ms ease;
+      gap: 8px;
+    }
+
+    .btn:active { transform: scale(0.98); }
+
+    .btn-primary {
+      background-color: var(--accent);
+      color: white;
+    }
+    .btn-primary:hover {
+      background-color: var(--accent-hover);
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+    }
+    .btn-outline:hover {
+      border-color: var(--accent);
+      background-color: rgba(124, 58, 237, 0.05);
+    }
+
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 72px;
+      background-color: rgba(248, 250, 252, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 1.5rem;
+      letter-spacing: -1px;
+    }
+
+    .logo svg {
+      width: 24px;
+      height: 24px;
+      fill: var(--accent);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .nav-links a:hover { color: var(--text-primary); }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* Hero */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding-top: 120px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      max-width: 900px;
+      margin: 0 auto 1.5rem;
+      animation: fadeUp 0.8s ease-out forwards;
+    }
+
+    .hero p {
+      max-width: 600px;
+      margin: 0 auto 2.5rem;
+      font-size: 1.25rem;
+      animation: fadeUp 0.8s ease-out 0.1s forwards;
+      opacity: 0;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 3rem;
+      animation: fadeUp 0.8s ease-out 0.2s forwards;
+      opacity: 0;
+    }
+
+    .hero-badges {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      align-items: center;
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      font-weight: 600;
+      animation: fadeUp 0.8s ease-out 0.3s forwards;
+      opacity: 0;
+    }
+
+    .hero-mockup {
+      margin-top: 4rem;
+      width: 100%;
+      max-width: 1000px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.04) inset;
+      overflow: hidden;
+      animation: float 6s ease-in-out infinite, fadeUp 0.8s ease-out 0.4s forwards;
+      opacity: 0;
+      text-align: left;
+    }
+
+    .mockup-header {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+      gap: 8px;
+    }
+
+    .mockup-dots {
+      display: flex;
+      gap: 6px;
+    }
+    .mockup-dots span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #cbd5e1;
+    }
+
+    .mockup-url {
+      flex: 1;
+      margin-left: 1rem;
+      display: flex;
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+    }
+    .mockup-method { color: var(--success); font-weight: 700; margin-right: 12px; }
+    .mockup-send { background: var(--accent); color: white; border-radius: 4px; padding: 4px 16px; font-weight: 600; font-size: 0.875rem; margin-left: 12px; }
+
+    .mockup-body {
+      display: flex;
+      height: 400px;
+    }
+    .mockup-sidebar { width: 240px; border-r: 1px solid var(--border); padding: 16px; font-size: 0.875rem; color: var(--text-secondary); }
+    .mockup-main { flex: 1; display: flex; flex-direction: column; }
+    .mockup-response { flex: 1; border-top: 1px solid var(--border); padding: 16px; font-family: var(--font-mono); font-size: 0.875rem; color: var(--text-primary); overflow: hidden; position: relative;}
+    
+    .mockup-status {
+      display: inline-block;
+      background: var(--success-bg);
+      color: var(--success);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    /* Hub and Spoke connector diagram */
+    .connections-section {
+      padding: 7rem 0;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .connections-section .section-label {
+      text-align: center;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-secondary);
+      margin-bottom: 0.75rem;
+    }
+    .connections-section h2 {
+      text-align: center;
+      font-size: 2.25rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+      letter-spacing: -0.03em;
+    }
+    .connections-section .subtitle {
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 1rem;
+      margin-bottom: 4.5rem;
+    }
+    .hub-diagram {
+      display: grid;
+      grid-template-columns: 1fr 80px auto 80px 1fr;
+      align-items: center;
+      gap: 0;
+      max-width: 900px;
+      margin: 0 auto;
+      position: relative;
+    }
+    /* Left column — tools/frameworks */
+    .spoke-col {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .spoke-col.left { align-items: flex-end; }
+    .spoke-col.right { align-items: flex-start; }
+    .spoke-chip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+      cursor: default;
+      position: relative;
+    }
+    .spoke-chip:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(124,58,237,0.08);
+      transform: translateX(-3px);
+    }
+    .spoke-col.right .spoke-chip:hover { transform: translateX(3px); }
+    .spoke-chip img, .spoke-chip svg { flex-shrink: 0; display: block; }
+    /* Connector rails */
+    .connector-rail {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      align-items: center;
+      width: 80px;
+      flex-shrink: 0;
+    }
+    .connector-line {
+      height: 41px; /* matches chip height ~41px */
+      width: 100%;
+      display: flex;
+      align-items: center;
+      position: relative;
+    }
+    .connector-line::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent) 40%, var(--accent) 60%, transparent);
+      opacity: 0.35;
+    }
+    .connector-line::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: 0.5;
+    }
+    /* Hub center */
+    .hub-center {
+      width: 96px;
+      height: 96px;
+      flex-shrink: 0;
+      border-radius: 22px;
+      background: linear-gradient(135deg, #7c3aed, #6d28d9);
+      box-shadow: 0 0 0 8px rgba(124,58,237,0.12), 0 0 40px rgba(124,58,237,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 2;
+    }
+    .hub-center::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: 23px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.25), transparent);
+      pointer-events: none;
+    }
+    /* Hub column wrapper to include label */
+    .hub-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .hub-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+    }
+    /* Column headings */
+    .col-heading {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-secondary);
+      text-align: center;
+      margin-bottom: 6px;
+    }
+    .spoke-col.left .col-heading { text-align: right; }
+    .spoke-col.right .col-heading { text-align: left; }
+
+    /* Features */
+    .features { padding: 8rem 0; }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
+      margin-top: 4rem;
+    }
+
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      transition: all 300ms ease;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    .feature-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .feature-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 20px rgba(124, 58, 237, 0.1);
+    }
+
+    .feature-icon {
+      font-size: 2rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.03em;
+      opacity: 0.5;
+    }
+
+    /* Frameworks strip */
+    .frameworks-strip {
+      margin-top: 3.5rem;
+      text-align: center;
+      border-top: 1px solid var(--border);
+      padding-top: 2.5rem;
+    }
+    .frameworks-strip__label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-secondary);
+      margin-bottom: 1.75rem;
+    }
+    .frameworks-strip__logos {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1.5rem 2.5rem;
+    }
+    .fw-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 7px;
+      opacity: 0.65;
+      transition: opacity 200ms ease, transform 200ms ease;
+      cursor: default;
+    }
+    .fw-item:hover { opacity: 1; transform: translateY(-2px); }
+    .fw-item img { display: block; }
+    .fw-item span {
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+
+    /* Responsive hub diagram */
+    @media (max-width: 700px) {
+      .hub-diagram { grid-template-columns: 1fr; gap: 2rem; }
+      .connector-rail { display: none; }
+      .spoke-col.left, .spoke-col.right { align-items: center; }
+      .spoke-col.left .col-heading, .spoke-col.right .col-heading { text-align: center; }
+      .spoke-chip:hover { transform: none; }
+      .hub-col { order: -1; }
+    }
+
+    /* How It Works */
+    .how-it-works { padding: 8rem 0; text-align: center;}
+    .steps {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 4rem;
+      position: relative;
+      gap: 2rem;
+    }
+    .step {
+      flex: 1;
+      text-align: left;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    .step.visible { opacity: 1; transform: translateY(0); transition-delay: calc(var(--i) * 200ms); transition: all 500ms ease; }
+    
+    .step-num {
+      width: 32px;
+      height: 32px;
+      background: var(--accent);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .step-content {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      min-height: 140px;
+    }
+
+    /* Pricing */
+    .pricing { padding: 8rem 0; text-align: center; background: var(--surface); border-top: 1px solid var(--border); }
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      margin-top: 4rem;
+    }
+    .pricing-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 3rem 2rem;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+    }
+    .pricing-card.highlight {
+      border: 2px solid var(--accent);
+      transform: translateY(-10px);
+    }
+    .pricing-price { font-size: 3rem; font-weight: 700; margin: 1rem 0; color: var(--text-primary); }
+    .pricing-price span { font-size: 1rem; color: var(--text-secondary); font-weight: 400; }
+    .pricing-features { margin: 2rem 0; flex: 1; }
+    .pricing-features li { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 1rem; color: var(--text-secondary); }
+    .pricing-features svg { width: 20px; height: 20px; stroke: var(--accent); flex-shrink: 0; }
+
+    /* Footer */
+    footer { padding: 6rem 0 2rem; border-top: 1px solid var(--border); background: var(--bg); }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; gap: 4rem; margin-bottom: 4rem; }
+    .footer-col h4 { font-size: 1rem; margin-bottom: 1.5rem; color: var(--text-primary); }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 0.75rem; }
+    .footer-col a { color: var(--text-secondary); font-size: 0.875rem; }
+    .footer-col a:hover { color: var(--text-primary); }
+    .footer-bottom { padding-top: 2rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; color: var(--text-secondary); font-size: 0.875rem; }
+
+    /* Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    @keyframes hubPulse {
+      0%, 100% { box-shadow: 0 0 0 8px rgba(124,58,237,0.12), 0 0 40px rgba(124,58,237,0.25); }
+      50% { box-shadow: 0 0 0 16px rgba(124,58,237,0.07), 0 0 60px rgba(124,58,237,0.35); }
+    }
+    .hub-center { animation: hubPulse 3s ease-in-out infinite; }
+
+    /* Hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      cursor: pointer;
+      padding: 6px;
+      background: none;
+      border: none;
+    }
+    .hamburger span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--text-primary);
+      border-radius: 2px;
+      transition: all 220ms ease;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 72px; left: 0; right: 0;
+      background: rgba(248, 250, 252, 0.98);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 1.25rem 2rem 1.75rem;
+      z-index: 99;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--text-secondary);
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .mobile-menu a:last-child { border-bottom: none; }
+    .mobile-menu a:hover { color: var(--text-primary); }
+    .mobile-menu .mobile-cta {
+      margin-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .mobile-menu .mobile-cta a { border-bottom: none; padding: 0; }
+    .mobile-menu .mobile-cta .btn-primary { color: white; }
+    .mobile-menu .mobile-cta .btn-outline { color: var(--text-primary); }
+
+    /* Tablet */
+    @media (max-width: 1024px) {
+      .footer-grid { grid-template-columns: 1fr 1fr 1fr; gap: 2.5rem; }
+      .footer-col:first-child { grid-column: 1 / -1; }
+      h1 { font-size: 3rem; }
+    }
+
+    /* Small tablet / large mobile */
+    @media (max-width: 900px) {
+      .nav-links, .nav-actions { display: none; }
+      .hamburger { display: flex; }
+
+      h1 { font-size: 2.5rem; }
+      h2 { font-size: 2rem; }
+
+      .hero { padding-top: 100px; padding-bottom: 3rem; }
+      .hero-mockup { display: none; }
+      .hero-badges { flex-wrap: wrap; gap: 0.75rem; justify-content: center; }
+
+      .features-grid { grid-template-columns: 1fr; }
+      .steps { flex-direction: column; }
+
+      .pricing-grid { grid-template-columns: 1fr; max-width: 480px; margin-left: auto; margin-right: auto; }
+      .pricing-card.highlight { transform: none; border-width: 2px; }
+
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+      .footer-col:first-child { grid-column: 1 / -1; }
+
+      .mockup-sidebar { display: none; }
+    }
+
+    /* Mobile */
+    @media (max-width: 600px) {
+      .container { padding: 0 1.25rem; }
+
+      h1 { font-size: 2rem; }
+      h2 { font-size: 1.75rem; }
+      h3 { font-size: 1.25rem; }
+      p { font-size: 1rem; }
+
+      .hero { min-height: auto; padding-top: 96px; padding-bottom: 4rem; }
+      .hero h1 { font-size: 2rem; }
+      .hero p { font-size: 1rem; max-width: 100%; }
+      .hero-actions { flex-direction: column; width: 100%; }
+      .hero-actions .btn { width: 100%; justify-content: center; }
+      .hero-badges { flex-direction: column; align-items: center; gap: 0.5rem; font-size: 0.8rem; }
+      .hero-badges span { display: none; }
+
+      .connections-section { padding: 4rem 0; }
+      .connections-section h2 { font-size: 1.75rem; }
+
+      .features { padding: 4rem 0; }
+      .features h2 { font-size: 1.75rem; }
+
+      .how-it-works { padding: 4rem 0; }
+      .steps { gap: 1.25rem; }
+
+      .pricing { padding: 4rem 0; }
+      .pricing-grid { max-width: 100%; }
+
+      footer { padding: 3rem 0 2rem; }
+      .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .footer-col:first-child { grid-column: auto; }
+      .footer-bottom { flex-direction: column; gap: 0.5rem; align-items: center; text-align: center; }
+    }
+
+    /* Hub diagram responsive */
+    @media (max-width: 700px) {
+      .hub-diagram { grid-template-columns: 1fr; gap: 2rem; }
+      .connector-rail { display: none; }
+      .spoke-col.left, .spoke-col.right { align-items: center; }
+      .spoke-col.left .col-heading, .spoke-col.right .col-heading { text-align: center; }
+      .spoke-chip:hover { transform: none; }
+      .hub-col { order: -1; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="container nav-inner">
+      <div class="logo">
+        <svg viewBox="0 0 80 120" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="0,100 40,0 80,0 40,50 65,50 25,120 35,70 10,70" />
+        </svg>
+        flint
+      </div>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#">Docs</a>
+      </div>
+      <div class="nav-actions">
+        <a href="http://localhost:5173/login" style="font-weight:600; font-size:0.9rem;">Sign In</a>
+        <a href="http://localhost:5173/signup" class="btn btn-primary" style="padding: 8px 16px;">Get Started</a>
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#features" onclick="closeMobile()">Features</a>
+    <a href="#pricing" onclick="closeMobile()">Pricing</a>
+    <a href="#" onclick="closeMobile()">Docs</a>
+    <div class="mobile-cta">
+      <a href="http://localhost:5173/login" class="btn btn-outline" style="width:100%; justify-content:center;">Sign In</a>
+      <a href="http://localhost:5173/signup" class="btn btn-primary" style="width:100%; justify-content:center;">Get Started Free</a>
+    </div>
+  </div>
+
+  <section class="hero container">
+    <h1>Build faster. Debug smarter. Ship with confidence.</h1>
+    <p>Not just a client. An intelligent API workspace.</p>
+    
+    <div class="hero-actions">
+      <a href="signup.html" class="btn btn-primary">Get Started Free</a>
+      <a href="#" class="btn btn-outline">See how it works</a>
+    </div>
+    
+
+    <div class="hero-mockup">
+      <div class="mockup-header">
+        <div class="mockup-dots"><span></span><span></span><span></span></div>
+        <div class="mockup-url">
+          <span class="mockup-method">GET</span>
+          https://api.flint.sh/v1/users/me
+        </div>
+        <button class="mockup-send">Send</button>
+      </div>
+      <div class="mockup-body">
+        <div class="mockup-sidebar">
+          <div style="margin-bottom:8px; font-weight:600; color:var(--text-primary);">Collections</div>
+          <div style="margin-bottom:8px;">📁 Core API</div>
+          <div style="margin-left:16px; margin-bottom:4px;">🟢 GET /users</div>
+          <div style="margin-left:16px; margin-bottom:4px; color:var(--text-primary);">🟢 GET /users/me</div>
+          <div style="margin-left:16px; margin-bottom:4px;">🟠 POST /users</div>
+        </div>
+        <div class="mockup-main">
+          <div style="padding:16px; border-bottom: 1px solid var(--border); color:var(--text-secondary); font-size:0.875rem;">
+            <span style="color:var(--text-primary); border-bottom: 2px solid var(--accent); padding-bottom:15px; margin-right:16px;">Params</span>
+            <span style="margin-right:16px;">Headers (2)</span>
+            <span style="margin-right:16px;">Auth</span>
+          </div>
+          <div class="mockup-response">
+            <div class="mockup-status">200 OK</div>
+            <span style="color:var(--text-secondary); margin-left:12px;">42ms &nbsp; 1.2KB</span>
+            <pre style="margin-top:16px;">
+<span style="color:#a855f7;">{</span>
+  <span style="color:#374151;">"id"</span>: <span style="color:#22c55e;">"usr_9f8a8b7c"</span>,
+  <span style="color:#374151;">"email"</span>: <span style="color:#22c55e;">"developer@flint.io"</span>,
+  <span style="color:#374151;">"plan"</span>: <span style="color:#22c55e;">"pro"</span>,
+  <span style="color:#374151;">"preferences"</span>: <span style="color:#a855f7;">{</span>
+    <span style="color:#374151;">"theme"</span>: <span style="color:#22c55e;">"dark"</span>,
+    <span style="color:#374151;">"ai_provider"</span>: <span style="color:#22c55e;">"openai"</span>
+  <span style="color:#a855f7;">}</span>
+<span style="color:#a855f7;">}</span></pre>
+            <div style="position:absolute; right:16px; top:16px; background:var(--bg); border:1px solid var(--accent); padding:12px; border-radius:8px; width:280px; box-shadow:0 10px 30px rgba(0,0,0,0.10);">
+              <div style="display:flex; align-items:center; gap:8px; color:var(--accent); font-weight:700; margin-bottom:8px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                Flint AI
+              </div>
+              <p style="font-size:0.75rem; color:var(--text-primary); margin:0;">The request succeeded. This is the authenticated user payload. The user is currently on the Pro plan with OpenAI selected as their provider.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="connections-section">
+    <div class="container">
+      <p class="section-label">Integrations</p>
+      <h2>Everything connects through Flint.</h2>
+      <p class="subtitle">Works with the editors you love and the AI models you trust — all in one place.</p>
+
+      <div class="hub-diagram">
+
+        <!-- Left: Editors only -->
+        <div class="spoke-col left">
+          <p class="col-heading">Works with</p>
+          <div class="spoke-chip">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg" width="22" height="22" alt="VS Code">
+            VS Code
+          </div>
+          <div class="spoke-chip">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jetbrains/jetbrains-original.svg" width="22" height="22" alt="JetBrains">
+            JetBrains
+          </div>
+          <div class="spoke-chip">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/neovim/neovim-original.svg" width="22" height="22" alt="Neovim">
+            Neovim
+          </div>
+        </div>
+
+        <!-- Left rail -->
+        <div class="connector-rail">
+          <div style="height:1.6rem;"></div>
+          <div class="connector-line"></div>
+          <div class="connector-line"></div>
+          <div class="connector-line"></div>
+        </div>
+
+        <!-- Center hub -->
+        <div class="hub-col">
+          <div class="hub-center">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 120" width="44" height="66">
+              <polygon points="0,100 40,0 80,0 40,50 65,50 25,120 35,70 10,70" fill="white"/>
+            </svg>
+          </div>
+          <span class="hub-label">Flint</span>
+        </div>
+
+        <!-- Right rail -->
+        <div class="connector-rail">
+          <div style="height:1.6rem;"></div>
+          <div class="connector-line"></div>
+          <div class="connector-line"></div>
+          <div class="connector-line"></div>
+          <div class="connector-line"></div>
+          <div class="connector-line"></div>
+        </div>
+
+        <!-- Right: AI Models -->
+        <div class="spoke-col right">
+          <p class="col-heading">Connects to</p>
+          <div class="spoke-chip">
+            <img src="https://cdn.simpleicons.org/claude/CC785C" width="22" height="22" alt="Anthropic Claude">
+            Anthropic Claude
+          </div>
+          <div class="spoke-chip">
+            <svg width="22" height="22" viewBox="0 0 41 41" fill="#74aa9c" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+              <path d="M37.532 16.87a9.963 9.963 0 0 0-.856-8.184 10.078 10.078 0 0 0-10.855-4.835 9.964 9.964 0 0 0-7.505-3.360 10.079 10.079 0 0 0-9.610 6.977 9.967 9.967 0 0 0-6.664 4.834 10.08 10.08 0 0 0 1.24 11.817 9.965 9.965 0 0 0 .856 8.185 10.079 10.079 0 0 0 10.855 4.835 9.965 9.965 0 0 0 7.504 3.360 10.079 10.079 0 0 0 9.610-6.978 9.967 9.967 0 0 0 6.664-4.834 10.079 10.079 0 0 0-1.24-11.817zm-17.073 23.989a7.48 7.48 0 0 1-4.811-1.735c.061-.033.168-.091.237-.134l7.986-4.611a1.337 1.337 0 0 0 .672-1.153V19.153l3.378 1.95a.122.122 0 0 1 .066.092v9.299a7.505 7.505 0 0 1-7.527 7.364zm-16.17-6.87a7.471 7.471 0 0 1-.894-5.023c.06.036.162.099.237.141l7.986 4.611a1.337 1.337 0 0 0 1.344 0l9.756-5.633v3.9a.12.12 0 0 1-.048.103L14.5 35.182a7.505 7.505 0 0 1-10.211-2.063zm-2.134-17.453a7.482 7.482 0 0 1 3.908-3.288c0 .068-.004.19-.004.274v9.22a1.337 1.337 0 0 0 .671 1.153l9.756 5.633-3.378 1.95a.12.12 0 0 1-.114.012L7.397 26.202a7.505 7.505 0 0 1-.242-9.566zm27.658 6.437l-9.756-5.633 3.378-1.95a.12.12 0 0 1 .114-.012l8.572 4.95a7.498 7.498 0 0 1-1.158 13.528v-9.494a1.336 1.336 0 0 0-.671-1.389zm3.366-5.036c-.061-.036-.162-.099-.236-.141l-7.987-4.61a1.337 1.337 0 0 0-1.344 0L13.856 23.36v-3.9a.12.12 0 0 1 .048-.103l8.572-4.95a7.504 7.504 0 0 1 11.15 7.76zm-21.122 6.94l-3.378-1.95a.12.12 0 0 1-.066-.092v-9.299a7.504 7.504 0 0 1 12.3-5.756c-.061.033-.168.091-.237.134l-7.986 4.61a1.337 1.337 0 0 0-.672 1.153l-.03 11.2zm1.838-3.96l4.342-2.507 4.342 2.504v5l-4.342 2.507-4.342-2.504V20.927z"/>
+            </svg>
+            OpenAI GPT-4o
+          </div>
+          <div class="spoke-chip">
+            <img src="https://cdn.simpleicons.org/googlegemini/4285f4" width="22" height="22" alt="Google Gemini">
+            Google Gemini
+          </div>
+          <div class="spoke-chip">
+            <img src="https://cdn.simpleicons.org/mistralai/FF7000" width="22" height="22" alt="Mistral">
+            Mistral
+          </div>
+          <div class="spoke-chip">
+            <img src="https://cdn.simpleicons.org/meta/0668E1" width="22" height="22" alt="Meta Llama">
+            Meta Llama
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Frameworks strip below the diagram -->
+      <div class="frameworks-strip">
+        <p class="frameworks-strip__label">Works with every framework</p>
+        <div class="frameworks-strip__logos">
+          <div class="fw-item">
+            <img src="https://cdn.simpleicons.org/express/374151" width="24" height="24" alt="Express">
+            <span>Express</span>
+          </div>
+          <div class="fw-item">
+            <img src="https://cdn.simpleicons.org/fastapi/009688" width="24" height="24" alt="FastAPI">
+            <span>FastAPI</span>
+          </div>
+          <div class="fw-item">
+            <img src="https://cdn.simpleicons.org/django/092E20" width="24" height="24" alt="Django">
+            <span>Django</span>
+          </div>
+          <div class="fw-item">
+            <img src="https://cdn.simpleicons.org/springboot/6DB33F" width="24" height="24" alt="Spring Boot">
+            <span>Spring Boot</span>
+          </div>
+          <div class="fw-item">
+            <img src="https://cdn.simpleicons.org/nestjs/E0234E" width="24" height="24" alt="NestJS">
+            <span>NestJS</span>
+          </div>
+          <div class="fw-item">
+            <img src="https://cdn.simpleicons.org/laravel/FF2D20" width="24" height="24" alt="Laravel">
+            <span>Laravel</span>
+          </div>
+          <div class="fw-item">
+            <img src="https://cdn.simpleicons.org/rubyonrails/CC0000" width="24" height="24" alt="Rails">
+            <span>Rails</span>
+          </div>
+          <div class="fw-item">
+            <img src="https://cdn.simpleicons.org/go/00ADD8" width="24" height="24" alt="Go">
+            <span>Go</span>
+          </div>
+          <div class="fw-item">
+            <img src="https://cdn.simpleicons.org/rust/374151" width="24" height="24" alt="Rust">
+            <span>Rust</span>
+          </div>
+          <div class="fw-item">
+            <img src="https://cdn.simpleicons.org/bun/374151" width="24" height="24" alt="Bun">
+            <span>Bun</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="features" class="features container">
+    <h2>Everything you need.<br>Nothing you don't.</h2>
+    <p>We stripped away the clutter of legacy API tools and focused strictly on developer velocity.</p>
+
+    <div class="features-grid">
+      <div class="feature-card observer-card">
+        <div class="feature-icon">01</div>
+        <h3>Live Code Sync</h3>
+        <p>Write a route in VS Code and watch it appear in your collection instantly. No importing. No manual setup.</p>
+      </div>
+      <div class="feature-card observer-card">
+        <div class="feature-icon">02</div>
+        <h3>AI That Actually Helps</h3>
+        <p>Explain any response, debug any error, generate requests from plain English. Powered by Claude, GPT-4o, or Gemini.</p>
+      </div>
+      <div class="feature-card observer-card">
+        <div class="feature-icon">03</div>
+        <h3>Every Framework</h3>
+        <p>Express, FastAPI, Django, Spring, Laravel, Rails, Gin, Actix. Flint speaks your language automatically.</p>
+      </div>
+      <div class="feature-card observer-card">
+        <div class="feature-icon">04</div>
+        <h3>Local First</h3>
+        <p>All your data lives on your machine. No account required to use the full app. Your requests never touch our servers.</p>
+      </div>
+      <div class="feature-card observer-card">
+        <div class="feature-icon">05</div>
+        <h3>WebSocket Support</h3>
+        <p>Test WebSocket, SSE, and Socket.io endpoints with full AI-powered message analysis and debugging.</p>
+      </div>
+      <div class="feature-card observer-card">
+        <div class="feature-icon">06</div>
+        <h3>Privacy First</h3>
+        <p>Your requests, collections, and API keys never leave your machine. No tracking. No telemetry. Your data is yours.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="how-it-works container">
+    <h2>From code to tested API in seconds.</h2>
+    <div class="steps">
+      <div class="step observer-card" style="--i:1;">
+        <div class="step-num">1</div>
+        <h3 style="font-size:1.25rem;">Write your route</h3>
+        <p style="font-size:0.875rem; margin-bottom:1rem;">Your code is the source of truth.</p>
+        <div class="step-content" style="font-family:var(--font-mono); font-size:0.875rem;">
+          <span style="color:#3b82f6;">router</span>.<span style="color:#eab308;">post</span>(<span style="color:#22c55e;">'/users'</span>, requireAuth, createUser)
+        </div>
+      </div>
+      <div class="step observer-card" style="--i:2;">
+        <div class="step-num">2</div>
+        <h3 style="font-size:1.25rem;">Flint detects it</h3>
+        <p style="font-size:0.875rem; margin-bottom:1rem;">No manual entry needed.</p>
+        <div class="step-content" style="display:flex; flex-direction:column; justify-content:center;">
+          <div style="font-weight:600; color:var(--text-primary);">New endpoint detected</div>
+          <div style="margin:8px 0; font-family:var(--font-mono);"><span style="color:var(--success);">POST</span> /users</div>
+          <button class="btn btn-outline" style="padding:6px; font-size:0.75rem; width:fit-content;">Add to collection</button>
+        </div>
+      </div>
+      <div class="step observer-card" style="--i:3;">
+        <div class="step-num">3</div>
+        <h3 style="font-size:1.25rem;">Send and understand</h3>
+        <p style="font-size:0.875rem; margin-bottom:1rem;">Test the API with AI assistance.</p>
+        <div class="step-content">
+          <div style="background:var(--success-bg); color:var(--success); padding:2px 8px; border-radius:4px; font-weight:700; font-family:var(--font-mono); display:inline-block; font-size:0.75rem; margin-bottom:12px;">201 Created</div>
+          <div style="color:var(--text-secondary); font-size:0.875rem; border-left:2px solid var(--accent); padding-left:12px;">
+            User successfully created. The response contains the generated UUID and default preferences.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pricing" class="pricing">
+    <div class="container">
+      <h2>Simple pricing.</h2>
+      <p style="margin:0 auto; max-width:600px;">All plans include the full feature set. No features locked behind paywalls except sync and team tools.</p>
+      
+      <div class="pricing-grid">
+        <div class="pricing-card observer-card">
+          <h3 style="font-size:1.5rem;">Free</h3>
+          <div class="pricing-price">$0<span>/month</span></div>
+          <p style="font-size:0.875rem;">Local storage only.</p>
+          <ul class="pricing-features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Full desktop app</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Unlimited local requests</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> 10 AI calls per day</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Bring your own AI key</li>
+          </ul>
+          <a href="signup.html" class="btn btn-outline" style="width:100%;">Download Free</a>
+        </div>
+        
+        <div class="pricing-card highlight observer-card">
+          <div style="color:var(--accent); font-weight:700; font-size:0.75rem; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Most Popular</div>
+          <h3 style="font-size:1.5rem;">Pro</h3>
+          <div class="pricing-price">$8<span>/month</span></div>
+          <p style="font-size:0.875rem;">For professional developers.</p>
+          <ul class="pricing-features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Everything in Free</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Unlimited AI calls</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Cloud sync across devices</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Request history backup</li>
+          </ul>
+          <a href="signup.html" class="btn btn-primary" style="width:100%;">Get Started</a>
+        </div>
+
+        <div class="pricing-card observer-card">
+          <h3 style="font-size:1.5rem;">Team</h3>
+          <div class="pricing-price">$16<span>/user/mo</span></div>
+          <p style="font-size:0.875rem;">For engineering teams.</p>
+          <ul class="pricing-features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Everything in Pro</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Shared workspaces</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Team collections</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Role-based access</li>
+          </ul>
+          <a href="signup.html" class="btn btn-outline" style="width:100%;">Start Team Trial</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <div class="logo" style="margin-bottom:1rem; font-size:1.25rem;">
+            <svg viewBox="0 0 80 120" xmlns="http://www.w3.org/2000/svg">
+              <polygon points="0,100 40,0 80,0 40,50 65,50 25,120 35,70 10,70" />
+            </svg>
+            flint
+          </div>
+          <p style="font-size:0.875rem; max-width:250px;">Build faster. Debug smarter. Ship with confidence. The AI-native API workspace.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Product</h4>
+          <ul>
+            <li><a href="#">Features</a></li>
+            <li><a href="#">Changelog</a></li>
+            <li><a href="#">Roadmap</a></li>
+            <li><a href="#">Download</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Developers</h4>
+          <ul>
+            <li><a href="#">Documentation</a></li>
+            <li><a href="#">API Reference</a></li>
+            <li><a href="#">Changelog</a></li>
+            <li><a href="#">Status</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Twitter</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="privacy.html">Privacy</a></li>
+            <li><a href="terms.html">Terms</a></li>
+            <li><a href="license.html">License</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div>&copy; 2026 Flint. All rights reserved.</div>
+        <div>Built for developers by developers.</div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Hamburger menu
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('open');
+      mobileMenu.classList.toggle('open');
+    });
+    function closeMobile() {
+      hamburger.classList.remove('open');
+      mobileMenu.classList.remove('open');
+    }
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        const target = document.querySelector(this.getAttribute('href'));
+        if (!target) return;
+        e.preventDefault();
+        closeMobile();
+        target.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+
+    // Intersection Observer for scroll animations
+    const observerOptions = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.observer-card').forEach(card => {
+      observer.observe(card);
+    });
+
+    lucide.createIcons();
+  </script>
+</body>
+</html>

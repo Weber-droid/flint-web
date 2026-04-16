@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useAIStore } from '../../store/aiStore'
 import { useRequestStore } from '../../store/requestStore'
-import { X, Sparkles, Send, Loader2 } from 'lucide-react'
+import { X, Sparkles, Send, Loader2, Play, Bug, FileCode, MessageSquare } from 'lucide-react'
 
 export function AIDrawer() {
   const { isOpen, toggleDrawer } = useAIStore()
@@ -17,14 +17,21 @@ export function AIDrawer() {
     }
   }, [messages])
 
+  useEffect(() => {
+    // Auto debug 4xx/5xx responses
+    if (lastResponse && lastResponse.status >= 400 && !isOpen) {
+      // Opt out of auto-opening for now, but we could toggleDrawer() here
+    }
+  }, [lastResponse])
+
   if (!isOpen) return null
 
-  const handleSend = async () => {
-    if (!input.trim() || isStreaming) return
+  const handleSend = async (overridePrompt?: string) => {
+    const promptText = overridePrompt || input.trim()
+    if (!promptText || isStreaming) return
     
-    const userMsg = input.trim()
-    setInput('')
-    setMessages(prev => [...prev, { role: 'user', content: userMsg }])
+    if (!overridePrompt) setInput('')
+    setMessages(prev => [...prev, { role: 'user', content: promptText }])
     setIsStreaming(true)
 
     try {
@@ -32,7 +39,7 @@ export function AIDrawer() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          prompt: userMsg,
+          prompt: promptText,
           context: { request: activeRequest, response: lastResponse }
         })
       })
@@ -65,7 +72,7 @@ export function AIDrawer() {
         }
       }
     } catch (error) {
-      setMessages(prev => [...prev, { role: 'ai', content: 'Error generating response.' }])
+      setMessages(prev => [...prev, { role: 'ai', content: 'Error generating response. Ensure the backend AI service is running.' }])
     } finally {
       setIsStreaming(false)
     }
@@ -90,6 +97,37 @@ export function AIDrawer() {
         </button>
       </div>
 
+      <div className="p-4 border-b border-border grid grid-cols-2 gap-2">
+        <button 
+          onClick={() => handleSend('Explain this response')}
+          className="flex items-center justify-center space-x-2 py-1.5 px-2 bg-background border border-border rounded text-xs hover:bg-border transition-colors text-primary"
+        >
+          <MessageSquare size={14} />
+          <span>Explain</span>
+        </button>
+        <button 
+          onClick={() => handleSend('Debug this error')}
+          className="flex items-center justify-center space-x-2 py-1.5 px-2 bg-background border border-border rounded text-xs hover:bg-border transition-colors text-primary"
+        >
+          <Bug size={14} />
+          <span>Debug</span>
+        </button>
+        <button 
+          onClick={() => handleSend('Generate a fetch snippet for this request')}
+          className="flex items-center justify-center space-x-2 py-1.5 px-2 bg-background border border-border rounded text-xs hover:bg-border transition-colors text-primary"
+        >
+          <FileCode size={14} />
+          <span>Snippet</span>
+        </button>
+        <button 
+          onClick={() => handleSend('Generate tests for this endpoint')}
+          className="flex items-center justify-center space-x-2 py-1.5 px-2 bg-background border border-border rounded text-xs hover:bg-border transition-colors text-primary"
+        >
+          <Play size={14} />
+          <span>Generate</span>
+        </button>
+      </div>
+
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.length === 0 && (
           <div className="text-secondary text-sm text-center mt-10">
@@ -111,26 +149,23 @@ export function AIDrawer() {
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="p-4 border-t border-border">
+      <div className="p-4 border-t border-border bg-surface">
         <div className="relative">
           <textarea
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Ask Flint AI..."
-            className="w-full bg-background border border-border rounded-md px-3 py-2 text-sm text-primary placeholder-secondary focus-ring resize-none"
+            className="w-full bg-background border border-border rounded-md px-3 py-2 text-sm text-primary placeholder-secondary focus-ring resize-none pr-10"
             rows={3}
           />
           <button 
-            onClick={handleSend}
+            onClick={() => handleSend()}
             disabled={isStreaming || !input.trim()}
             className="absolute bottom-2 right-2 text-accent disabled:text-secondary disabled:opacity-50 transition-colors p-1 rounded-md hover:bg-surface"
           >
             <Send size={16} />
           </button>
-        </div>
-        <div className="text-xs text-secondary mt-2 text-right">
-          {input.length} chars
         </div>
       </div>
     </div>

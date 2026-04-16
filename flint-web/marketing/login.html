@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign in to Flint</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --surface: #111111;
+      --border: #1f1f1f;
+      --text-primary: #f5f5f5;
+      --text-secondary: #737373;
+      --accent: #7c3aed;
+      --accent-hover: #6d28d9;
+      --input-bg: #161616;
+      --input-border: #262626;
+      --font-sans: 'Inter', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+    
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      height: 100vh;
+      display: flex;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--accent); text-decoration: none; transition: color 150ms ease; }
+    a:hover { color: var(--accent-hover); text-decoration: underline; }
+
+    .split-layout { display: flex; width: 100%; height: 100%; }
+
+    .panel-left {
+      flex: 1;
+      background: #0d0d0d;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 4rem;
+      overflow: hidden;
+    }
+
+    /* Abstract generated image simulation */
+    .ai-background {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: radial-gradient(circle at 30% 70%, rgba(124, 58, 237, 0.15) 0%, transparent 50%),
+                  radial-gradient(circle at 80% 20%, rgba(124, 58, 237, 0.05) 0%, transparent 40%),
+                  #0d0d0d;
+      z-index: 1;
+    }
+    
+    /* Simulating sharp angular prisms */
+    .prism {
+      position: absolute;
+      background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 100%);
+      border: 1px solid rgba(124, 58, 237, 0.1);
+      backdrop-filter: blur(4px);
+      z-index: 2;
+    }
+
+    .panel-left-content { position: relative; z-index: 10; }
+    .quote { font-size: 1.5rem; font-style: italic; font-weight: 400; color: white; max-width: 400px; line-height: 1.4; }
+
+    .panel-right {
+      flex: 1;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      border-left: 1px solid var(--border);
+    }
+
+    .form-container { width: 100%; max-width: 400px; }
+
+    .logo { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 1.5rem; letter-spacing: -1px; margin-bottom: 3rem; }
+    .logo svg { width: 24px; height: 24px; fill: var(--accent); }
+
+    h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.02em; }
+    p.subheading { color: var(--text-secondary); margin-bottom: 2.5rem; }
+
+    .input-group { margin-bottom: 1.5rem; position: relative; }
+    .input-group label { display: flex; justify-content: space-between; font-size: 0.875rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.5rem; }
+    .input-group input {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      transition: all 150ms ease;
+      outline: none;
+    }
+    .input-group input::placeholder { color: #525252; }
+    .input-group input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2); }
+    
+    .toggle-password { position: absolute; right: 16px; top: 38px; color: var(--text-secondary); cursor: pointer; font-size: 0.75rem; background: none; border: none; font-weight: 600; }
+    .toggle-password:hover { color: var(--text-primary); }
+
+    .btn {
+      width: 100%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 150ms ease;
+      cursor: pointer;
+      border: none;
+      outline: none;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary { background-color: var(--accent); color: white; }
+    .btn-primary:hover { background-color: var(--accent-hover); }
+    .btn-outline { background-color: transparent; border: 1px solid var(--input-border); color: var(--text-primary); gap: 8px; margin-top: 1rem; }
+    .btn-outline:hover { border-color: var(--accent); background-color: #0d0a1a; }
+
+    .divider { display: flex; align-items: center; text-align: center; margin: 1.5rem 0; color: var(--text-secondary); font-size: 0.875rem; }
+    .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--border); }
+    .divider:not(:empty)::before { margin-right: 1rem; }
+    .divider:not(:empty)::after { margin-left: 1rem; }
+
+    .footer-link { text-align: center; margin-top: 2rem; font-size: 0.875rem; color: var(--text-secondary); }
+    .footer-link a { font-weight: 600; }
+
+    @media (max-width: 900px) {
+      .panel-left { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="split-layout">
+    <!-- Left Panel (AI Image Area) -->
+    <div class="panel-left" aria-label="Abstract dark background, deep violet and black geometric light refractions, sharp angular prisms catching light in a dark void, ultra high resolution, cinematic">
+      <div class="ai-background"></div>
+      <!-- Decorative generated elements -->
+      <div class="prism" style="width: 300px; height: 400px; transform: rotate(45deg); top: -100px; left: -100px;"></div>
+      <div class="prism" style="width: 200px; height: 600px; transform: rotate(-20deg); bottom: -200px; right: 100px;"></div>
+      <div class="prism" style="width: 100px; height: 100px; transform: rotate(15deg); top: 30%; right: 20%;"></div>
+
+      <div class="panel-left-content">
+        <div class="quote">"The best developers test everything."</div>
+      </div>
+    </div>
+
+    <!-- Right Panel (Form) -->
+    <div class="panel-right">
+      <div class="form-container">
+        <div class="logo">
+          <svg viewBox="0 0 80 120" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="0,100 40,0 80,0 40,50 65,50 25,120 35,70 10,70" />
+          </svg>
+          flint
+        </div>
+
+        <h1>Welcome back.</h1>
+        <p class="subheading">Sign in to sync your collections.</p>
+
+        <form action="#">
+          <div class="input-group">
+            <label for="email">Email address</label>
+            <input type="email" id="email" placeholder="developer@example.com" required>
+          </div>
+          <div class="input-group">
+            <label for="password">
+              Password
+              <a href="forgot-password.html" style="font-weight:400;">Forgot password?</a>
+            </label>
+            <input type="password" id="password" placeholder="••••••••" required>
+            <button type="button" class="toggle-password" onclick="togglePw()">SHOW</button>
+          </div>
+          
+          <button type="submit" class="btn btn-primary">Sign In</button>
+        </form>
+
+        <div class="divider">or</div>
+
+        <button class="btn btn-outline">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.161 22 16.416 22 12c0-5.523-4.477-10-10-10z"/></svg>
+          Continue with GitHub
+        </button>
+
+        <div class="footer-link">
+          Don't have an account? <a href="signup.html">Sign up</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function togglePw() {
+      const input = document.getElementById('password');
+      const btn = document.querySelector('.toggle-password');
+      if (input.type === 'password') {
+        input.type = 'text';
+        btn.textContent = 'HIDE';
+      } else {
+        input.type = 'password';
+        btn.textContent = 'SHOW';
+      }
+    }
+  </script>
+</body>
+</html>

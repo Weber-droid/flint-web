@@ -14,16 +14,18 @@ export function MonacoEditor({ value, onChange, language = 'json', readOnly = fa
 
   React.useEffect(() => {
     if (monaco) {
-      monaco.editor.defineTheme('flint-dark', {
-        base: 'vs-dark',
+      monaco.editor.defineTheme('flint-light', {
+        base: 'vs',
         inherit: true,
         rules: [],
         colors: {
-          'editor.background': '#0d0d0d',
-          'editor.lineHighlightBackground': '#161616',
+          'editor.background': '#f8fafc',
+          'editor.lineHighlightBackground': '#f1f5f9',
+          'editorLineNumber.foreground': '#94a3b8',
+          'editorIndentGuide.background': '#e2e8f0',
         }
       })
-      monaco.editor.setTheme('flint-dark')
+      monaco.editor.setTheme('flint-light')
     }
   }, [monaco])
 
@@ -36,7 +38,7 @@ export function MonacoEditor({ value, onChange, language = 'json', readOnly = fa
       <Editor
         height="100%"
         language={language}
-        theme="flint-dark"
+        theme="flint-light"
         value={value}
         onChange={(val) => onChange && onChange(val || '')}
         options={{

@@ -9,7 +9,19 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:3001',
         changeOrigin: true
-      }
+      },
+      // Proxy the marketing root and all .html pages to the backend static server
+      '^/$': {
+        target: 'http://localhost:3001',
+        changeOrigin: true
+      },
+      '^/.+\\.html$': {
+        target: 'http://localhost:3001',
+        changeOrigin: true
+      },
+      // Marketing assets
+      '^/logo\\.svg$': { target: 'http://localhost:3001', changeOrigin: true },
+      '^/icon\\.(png|svg)$': { target: 'http://localhost:3001', changeOrigin: true }
     }
   }
 })

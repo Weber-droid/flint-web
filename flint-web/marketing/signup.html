@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign up for Flint</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --surface: #111111;
+      --border: #1f1f1f;
+      --text-primary: #f5f5f5;
+      --text-secondary: #737373;
+      --accent: #7c3aed;
+      --accent-hover: #6d28d9;
+      --input-bg: #161616;
+      --input-border: #262626;
+      --font-sans: 'Inter', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --success: #22c55e;
+      --error: #ef4444;
+      --warning: #eab308;
+    }
+    
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      height: 100vh;
+      display: flex;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--accent); text-decoration: none; transition: color 150ms ease; }
+    a:hover { color: var(--accent-hover); text-decoration: underline; }
+
+    .split-layout { display: flex; width: 100%; height: 100%; }
+
+    .panel-left {
+      flex: 1;
+      background: #0d0d0d;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 4rem;
+      overflow: hidden;
+    }
+
+    /* Abstract glowing neural network threads */
+    .ai-background {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: #0d0d0d;
+      z-index: 1;
+      overflow: hidden;
+    }
+    
+    .node {
+      position: absolute;
+      width: 4px; height: 4px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 10px 2px rgba(124, 58, 237, 0.8);
+      z-index: 2;
+    }
+    .thread {
+      position: absolute;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(124, 58, 237, 0.8), rgba(124, 58, 237, 0));
+      z-index: 2;
+      transform-origin: left center;
+    }
+
+    .panel-right {
+      flex: 1;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      border-left: 1px solid var(--border);
+      overflow-y: auto;
+    }
+
+    .form-container { width: 100%; max-width: 400px; padding: 2rem 0; }
+
+    .logo { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 1.5rem; letter-spacing: -1px; margin-bottom: 2rem; }
+    .logo svg { width: 24px; height: 24px; fill: var(--accent); }
+
+    h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.02em; }
+    p.subheading { color: var(--text-secondary); margin-bottom: 2rem; }
+
+    .input-group { margin-bottom: 1rem; position: relative; }
+    .input-group label { display: flex; justify-content: space-between; font-size: 0.875rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.5rem; }
+    .input-group input {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      transition: all 150ms ease;
+      outline: none;
+    }
+    .input-group input::placeholder { color: #525252; }
+    .input-group input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2); }
+    
+    .strength-meter { display: flex; gap: 4px; margin-top: 8px; }
+    .strength-bar { height: 4px; flex: 1; background: var(--input-border); border-radius: 2px; transition: all 300ms ease; }
+    .strength-bar.active-1 { background: var(--error); }
+    .strength-bar.active-2 { background: var(--warning); }
+    .strength-bar.active-3 { background: #84cc16; }
+    .strength-bar.active-4 { background: var(--success); }
+
+    .btn {
+      width: 100%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 150ms ease;
+      cursor: pointer;
+      border: none;
+      outline: none;
+      margin-top: 1rem;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary { background-color: var(--accent); color: white; }
+    .btn-primary:hover { background-color: var(--accent-hover); }
+    .btn-outline { background-color: transparent; border: 1px solid var(--input-border); color: var(--text-primary); gap: 8px; margin-top: 0; }
+    .btn-outline:hover { border-color: var(--accent); background-color: #0d0a1a; }
+
+    .divider { display: flex; align-items: center; text-align: center; margin: 1.5rem 0; color: var(--text-secondary); font-size: 0.875rem; }
+    .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--border); }
+    .divider:not(:empty)::before { margin-right: 1rem; }
+    .divider:not(:empty)::after { margin-left: 1rem; }
+
+    .footer-link { text-align: center; margin-top: 1.5rem; font-size: 0.875rem; color: var(--text-secondary); }
+    .footer-link a { font-weight: 600; }
+    .terms { font-size: 0.75rem; color: var(--text-secondary); text-align: center; margin-top: 1.5rem; }
+
+    @media (max-width: 900px) {
+      .panel-left { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="split-layout">
+    <!-- Left Panel (AI Image Area) -->
+    <div class="panel-left" aria-label="Abstract dark background, glowing neural network nodes connected by thin violet light threads, floating in black space, deep purple and indigo color palette, ultra high resolution, cinematic">
+      <div class="ai-background">
+        <!-- Procedural generated visual feel -->
+        <div class="node" style="top: 30%; left: 40%;"></div>
+        <div class="node" style="top: 60%; left: 70%;"></div>
+        <div class="node" style="top: 50%; left: 20%;"></div>
+        <div class="node" style="top: 80%; left: 50%;"></div>
+        
+        <div class="thread" style="top: 30%; left: 40%; width: 150px; transform: rotate(45deg);"></div>
+        <div class="thread" style="top: 50%; left: 20%; width: 200px; transform: rotate(-20deg);"></div>
+        <div class="thread" style="top: 60%; left: 70%; width: 180px; transform: rotate(120deg);"></div>
+      </div>
+    </div>
+
+    <!-- Right Panel (Form) -->
+    <div class="panel-right">
+      <div class="form-container">
+        <div class="logo">
+          <svg viewBox="0 0 80 120" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="0,100 40,0 80,0 40,50 65,50 25,120 35,70 10,70" />
+          </svg>
+          flint
+        </div>
+
+        <h1>Create your account.</h1>
+        <p class="subheading">Free forever. No credit card required.</p>
+
+        <form action="#">
+          <div class="input-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" placeholder="Ada Lovelace" required>
+          </div>
+          <div class="input-group">
+            <label for="email">Email address</label>
+            <input type="email" id="email" placeholder="developer@example.com" required>
+          </div>
+          <div class="input-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="••••••••" required oninput="checkStrength(this.value)">
+            <div class="strength-meter">
+              <div class="strength-bar" id="str-1"></div>
+              <div class="strength-bar" id="str-2"></div>
+              <div class="strength-bar" id="str-3"></div>
+              <div class="strength-bar" id="str-4"></div>
+            </div>
+          </div>
+          <div class="input-group">
+            <label for="confirm">Confirm Password</label>
+            <input type="password" id="confirm" placeholder="••••••••" required>
+          </div>
+          
+          <button type="submit" class="btn btn-primary">Create Account</button>
+        </form>
+
+        <div class="divider">or</div>
+
+        <button class="btn btn-outline">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.161 22 16.416 22 12c0-5.523-4.477-10-10-10z"/></svg>
+          Sign up with GitHub
+        </button>
+
+        <p class="terms">By clicking "Create Account", you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</p>
+
+        <div class="footer-link">
+          Already have an account? <a href="login.html">Sign in</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function checkStrength(val) {
+      let score = 0;
+      if (val.length > 0) score++;
+      if (val.length > 7) score++;
+      if (/[A-Z]/.test(val) && /[0-9]/.test(val)) score++;
+      if (/[^A-Za-z0-9]/.test(val)) score++;
+      
+      for(let i=1; i<=4; i++) {
+        const el = document.getElementById('str-'+i);
+        el.className = 'strength-bar';
+        if (i <= score) {
+          el.classList.add('active-' + score);
+        }
+      }
+    }
+  </script>
+</body>
+</html>

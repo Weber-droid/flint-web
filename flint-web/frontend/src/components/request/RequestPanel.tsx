@@ -1,20 +1,29 @@
-import React from 'react'
+import { useState } from 'react'
 import { UrlBar } from './UrlBar'
 import { KeyValueEditor } from '../common/KeyValueEditor'
 import { ResponseViewer } from '../response/ResponseViewer'
 import { useRequestStore } from '../../store/requestStore'
 import { MonacoEditor } from '../common/MonacoEditor'
+import { TabBar } from '../layout/TabBar'
 
 export function RequestPanel() {
   const { activeRequest, updateActiveRequest } = useRequestStore()
-  const [activeTab, setActiveTab] = React.useState('Params')
+  const [activeTab, setActiveTab] = useState('Params')
 
-  if (!activeRequest) return null
+  if (!activeRequest) return (
+    <div className="flex flex-col h-full w-full">
+      <TabBar />
+      <div className="flex-1 flex items-center justify-center text-secondary">
+        No active request
+      </div>
+    </div>
+  )
 
   const tabs = ['Params', 'Headers', 'Body', 'Auth', 'Pre-request Script', 'Tests']
 
   return (
     <div className="flex flex-col h-full w-full">
+      <TabBar />
       <UrlBar />
       
       <div className="flex items-center px-4 border-b border-border bg-background overflow-x-auto scrollbar-hide">
@@ -33,7 +42,7 @@ export function RequestPanel() {
         ))}
       </div>
 
-      <div className="flex-1 min-h-[300px] overflow-y-auto bg-background">
+      <div className="flex-1 min-h-[300px] overflow-y-auto bg-background flex flex-col">
         {activeTab === 'Params' && (
           <KeyValueEditor 
             items={activeRequest.params} 
@@ -47,7 +56,7 @@ export function RequestPanel() {
           />
         )}
         {activeTab === 'Body' && (
-          <div className="h-full">
+          <div className="flex-1 min-h-0">
             <MonacoEditor 
               value={activeRequest.body} 
               onChange={body => updateActiveRequest({ body })} 
