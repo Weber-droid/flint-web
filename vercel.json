@@ -1,0 +1,7 @@
+{
+  "buildCommand": "cd flint-web/frontend && bun install && bun run build",
+  "outputDirectory": "flint-web/frontend/dist",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
